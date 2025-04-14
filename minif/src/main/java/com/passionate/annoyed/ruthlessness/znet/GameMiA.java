@@ -11,7 +11,7 @@ public class GameMiA {
 
     static {
         try {
-            System.loadLibrary("BYoEHKM");
+            System.loadLibrary("SusTile");
         } catch (Exception e) {
 
         }

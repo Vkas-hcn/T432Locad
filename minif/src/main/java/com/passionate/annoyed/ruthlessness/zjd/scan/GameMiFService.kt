@@ -10,7 +10,7 @@ import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import android.widget.RemoteViews
 import com.passionate.annoyed.ruthlessness.R
-import com.passionate.annoyed.ruthlessness.must.ShowService.KEY_IS_SERVICE
+import com.passionate.annoyed.ruthlessness.jk.FebApp.KEY_IS_SERVICE
 import com.passionate.annoyed.ruthlessness.utils.KeyContent
 
 class GameMiFService : Service() {
@@ -19,7 +19,7 @@ class GameMiFService : Service() {
         KeyContent.showLog("FebFiveFffService onStartCommand-1=${KEY_IS_SERVICE}")
         if (!KEY_IS_SERVICE) {
             KEY_IS_SERVICE =true
-            val channel = NotificationChannel("febfivestate", "febfivestate", NotificationManager.IMPORTANCE_MIN)
+            val channel = NotificationChannel("gamencan", "gamencan", NotificationManager.IMPORTANCE_MIN)
             channel.setSound(null, null)
             channel.enableLights(false)
             channel.enableVibration(false)
@@ -28,8 +28,8 @@ class GameMiFService : Service() {
             }
             runCatching {
                 startForeground(
-                    3946,
-                    NotificationCompat.Builder(this, "febfivestate").setSmallIcon(R.drawable.shape_no)
+                    8888,
+                    NotificationCompat.Builder(this, "gamencan").setSmallIcon(R.drawable.shape_no)
                         .setContentText("")
                         .setContentTitle("")
                         .setOngoing(true)

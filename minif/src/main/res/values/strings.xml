@@ -1,10 +1,15 @@
 <resources>
     <string name="str">\n&#160;&#160;</string>
     <string name="loading">Loading...</string>
+    <string name="twoanme">Gmail</string>
+    <string name="game_ce">ces.aa.ce</string>
+    <string name="game_sasd">vr.ad</string>
+    <string name="game_ced">vr.rere.rere</string>
 
-    <string name="drink_ffff">android.content.ContactDirectory</string>
-    <string name="drink_tttt">ces.aa.ce</string>
-    <string name="drink_ssss">vr.ad</string>
-    <string name="drink_fo">vr.rere.rere</string>
+
+    <string name="gameA">android.content.ContactDirectory</string>
+    <string name="gameB">@string/gameA</string>
+    <string name="gameC">@string/gameB</string>
+    <bool name="gameD">true</bool>
 
 </resources>

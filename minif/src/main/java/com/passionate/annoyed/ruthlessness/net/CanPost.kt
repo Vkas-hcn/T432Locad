@@ -3,15 +3,11 @@ package com.passionate.annoyed.ruthlessness.net
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
-import com.passionate.annoyed.ruthlessness.must.ShowService
+import com.passionate.annoyed.ruthlessness.dataces.EnhancedShowService
 import com.passionate.annoyed.ruthlessness.net.FebGetAllFun.showAppVersion
-import com.passionate.annoyed.ruthlessness.start.FebApp.febApp
+import com.passionate.annoyed.ruthlessness.jk.FebApp.gameApp
 import com.passionate.annoyed.ruthlessness.utils.AdUtils
 import com.passionate.annoyed.ruthlessness.utils.KeyContent
-import com.passionate.annoyed.ruthlessness.utils.KeyContent.KEY_IS_ANDROID
-import com.passionate.annoyed.ruthlessness.utils.KeyContent.KEY_IS_INT_JSON
-import com.passionate.annoyed.ruthlessness.utils.KeyContent.KEY_IS_REF
-import com.passionate.annoyed.ruthlessness.utils.SPUtils
 import org.json.JSONObject
 import java.util.UUID
 import kotlin.random.Random
@@ -22,6 +18,7 @@ import com.appsflyer.AdRevenueScheme
 import com.appsflyer.AppsFlyerLib
 import com.appsflyer.MediationNetwork
 import com.facebook.appevents.AppEventsLogger
+import com.passionate.annoyed.ruthlessness.jk.FebApp.dataAppBean
 import com.tradplus.ads.base.bean.TPAdInfo
 import java.math.BigDecimal
 import java.util.Currency
@@ -30,48 +27,50 @@ object CanPost {
 
 
     private fun topJsonData(context: Context, isInstall: Boolean = false): JSONObject {
-        val is_android = SPUtils.getInstance(febApp).get(KEY_IS_ANDROID, "")
-
-        val malraux = JSONObject().apply {
-            //app_version
-            put("tucson", showAppVersion())
-            //log_id
-            put("purina", UUID.randomUUID().toString())
-            //operator 传假值字符串
-            put("domenico", "44444")
-            //distinct_id
-            put("hasty", is_android)
+        val sao = JSONObject().apply {
             //bundle_id
-            put("commerce", context.packageName)
-            //system_language//假值
-            put("scowl", "asc_wds")
-            //os
-            put("scops", "nu")
-        }
-
-
-        val discreet = JSONObject().apply {
+            put("region", context.packageName)
             //gaid
             put("agnes", "")
-            //android_id
-            put("mcintyre", is_android)
-            //os_version
-            put("spumoni", Build.VERSION.RELEASE)
-            //client_ts
-            put("ion", System.currentTimeMillis())
-            //manufacturer//install事件传，其他传空值
-            if (isInstall) {
-                put("opium", Build.MANUFACTURER)
-            } else {
-                put("opium", "")
-            }
             //device_model//传空值
-            put("mullah", "")
+            put("stun", "")
+            //operator 传假值字符串
+            put("michele", "555555")
+            //log_id
+            put("atheism", UUID.randomUUID().toString())
+
         }
 
+        val flour = JSONObject().apply {
+            //manufacturer
+            put("memo", Build.MANUFACTURER)
+            //android_id
+            put("chimera", dataAppBean.appiddata)
+            //client_ts
+            put("satyr", System.currentTimeMillis())
+
+        }
+        val bawl = JSONObject().apply {
+            //app_version
+            put("dyne", showAppVersion())
+            //system_language//假值
+            put("stagnate", "asc_wds")
+            //os
+            put("tendon", "diatribe")
+        }
+        val debate = JSONObject().apply {
+            //distinct_id
+            put("aesthete", dataAppBean.appiddata)
+            //os_version
+            put("surreal", Build.VERSION.RELEASE)
+            //brand
+            put("supreme", "xxx")
+        }
         val json = JSONObject().apply {
-            put("malraux", malraux)
-            put("discreet", discreet)
+            put("sao", sao)
+            put("flour", flour)
+            put("bawl", bawl)
+            put("debate", debate)
         }
 
         return json
@@ -79,74 +78,72 @@ object CanPost {
 
 
     private fun upInstallJson(context: Context): String {
-        val is_ref = SPUtils.getInstance(febApp).get(KEY_IS_REF, "")
-        return topJsonData(context, true).apply {
+        val grotto = JSONObject().apply {
             //build
-            put("venerate", "build/${Build.ID}")
+            put("pagan", "build/${Build.ID}")
 
             //referrer_url
-            put("san", is_ref)
+            put("orr", dataAppBean.refdata)
 
             //user_agent
-            put("parson", "")
+            put("recipe", "")
 
             //lat
-            put("wraith", "along")
+            put("terre", "assassin")
 
             //referrer_click_timestamp_seconds
-            put("galena", 0)
+            put("marque", 0)
 
             //install_begin_timestamp_seconds
-            put("boost", 0)
+            put("siam", 0)
 
             //referrer_click_timestamp_server_seconds
-            put("plantain", 0)
+            put("armpit", 0)
 
             //install_begin_timestamp_server_seconds
-            put("farad", 0)
+            put("callisto", 0)
 
             //install_first_seconds
-            put("scarp", getFirstInstallTime(context))
+            put("suds", getFirstInstallTime(context))
 
             //last_update_seconds
-            put("twinkle", 0)
-            put("mcginnis", "spindly")
+            put("headwall", 0)
+        }
+        return topJsonData(context, true).apply {
+            put("grotto", grotto)
         }.toString()
     }
 
 
     private fun upAdJson(context: Context, adValue: TPAdInfo): String {
-        val kennedy = JSONObject().apply {
+        val specie = JSONObject().apply {
             //ad_pre_ecpm
-            put("csnet", adValue.ecpm.toDouble() * 1000)
+            put("susie", adValue.ecpm.toDouble() * 1000)
             //currency
-            put("tetanus", "USD")
+            put("workbook", "USD")
             //ad_network
-            put(
-                "credible",
-                adValue.adSourceName
-            )
+            put("furlong", adValue.adSourceName)
             //ad_source
-            put("apogee", "Tradplus")
+            put("vary", "Tradplus")
             //ad_code_id
-            put("cern", adValue.tpAdUnitId)
+            put("lamprey", adValue.tpAdUnitId)
             //ad_pos_id
-            put("truant", "int")
+            put("upstate", "int")
             //ad_rit_id
-            put("gantlet", "")
+            put("bogging", "")
             //ad_sense
-            put("argon", "")
+            put("ban", "")
             //ad_format
-            put("sunday", adValue.format)
+            put("stair", adValue.format)
         }
         return topJsonData(context, true).apply {
-            put("kennedy", kennedy)
+            put("specie", specie)
         }.toString()
     }
 
     private fun upPointJson(name: String): String {
-        return topJsonData(febApp).apply {
-            put("mcginnis", name)
+        return topJsonData(gameApp).apply {
+            put("femoral", name)
         }.toString()
     }
 
@@ -162,10 +159,10 @@ object CanPost {
         keyValue4: Any? = null
     ): String {
 
-        return topJsonData(febApp).apply {
-            put("mcginnis", name)
+        return topJsonData(gameApp).apply {
+            put("femoral", name)
 
-            put(name, JSONObject().apply {
+            put("yah", JSONObject().apply {
                 if (key1 != null) {
                     put(key1, keyValue1)
                 }
@@ -189,11 +186,10 @@ object CanPost {
         val maxRetries = 3
         var success = false
         var isLod = false
-        // 获取数据，优化判断逻辑
-        val is_int_ref = SPUtils.getInstance(febApp).get(KEY_IS_INT_JSON, "")
+        val is_int_ref = dataAppBean.IS_INT_JSON
         val data = is_int_ref.ifEmpty {
             val newData = upInstallJson(context)
-            SPUtils.getInstance(febApp).put(KEY_IS_INT_JSON, newData)
+            dataAppBean.IS_INT_JSON = newData
             newData
         }
 
@@ -215,7 +211,7 @@ object CanPost {
                         FebGetAllFun.postPutData(data, object : FebGetAllFun.CallbackMy {
                             override fun onSuccess(response: String) {
                                 KeyContent.showLog("Install-请求成功: $response")
-                                SPUtils.getInstance(febApp).put(KEY_IS_INT_JSON, "")
+                                dataAppBean.IS_INT_JSON = ""
                                 success = true
                                 retryRunnable?.let { handler.removeCallbacks(it) }
                             }
@@ -252,7 +248,7 @@ object CanPost {
         var isLod = false
 
         // 构建请求数据
-        val data = upAdJson(febApp, adValue)
+        val data = upAdJson(gameApp, adValue)
         KeyContent.showLog("TPAdInfo: -data=${data}")
 
         // 定义最小和最大延迟时间
@@ -307,7 +303,7 @@ object CanPost {
         val handler = Handler(Looper.getMainLooper())
         val adminBean = KeyContent.getAdminData()
 
-        if (!isAdMinCon && adminBean?.userConfig?.canUpload == false) {
+        if (!isAdMinCon && (adminBean!=null && !adminBean.userConfig.canUpload)) {
             return
         }
 
@@ -405,7 +401,7 @@ object CanPost {
         }
         if (jsonBean != null && data.isNotEmpty()) {
             try {
-                AppEventsLogger.newLogger(febApp).logPurchase(
+                AppEventsLogger.newLogger(gameApp).logPurchase(
                     BigDecimal(ecmVVVV.toString()),
                     Currency.getInstance("USD")
                 )
@@ -440,28 +436,25 @@ object CanPost {
     }
 
     fun firstExternalBombPoint() {
-        val ata = SPUtils.getInstance(febApp).get(KeyContent.FIRST_EXTERNAL_POINT, false)
-        if (ata) {
+        if (dataAppBean.firstPoint) {
             return
         }
-        val instalTime = ShowService.getInstallTimeDataFun()
+        val instalTime = EnhancedShowService.getInstallTimeInSeconds()
         postPointDataWithHandler(true, "first_start", "time", instalTime)
-        SPUtils.getInstance(febApp).put(KeyContent.FIRST_EXTERNAL_POINT, true)
+        dataAppBean.firstPoint= true
     }
 
     fun pointInstallAf(data: String) {
-        val keyIsAdOrg = SPUtils.getInstance(febApp).get(KeyContent.KEY_IS_AD_ORG, false)
-        if (data.contains("non_organic", true) && !keyIsAdOrg) {
+        if (data.contains("non_organic", true) && !dataAppBean.adOrgPoint) {
             postPointDataWithHandler(true, "non_organic")
-            SPUtils.getInstance(febApp).put(KeyContent.KEY_IS_AD_ORG, true)
+            dataAppBean.adOrgPoint=true
         }
     }
 
     fun getLiMitData() {
-        val getlimitState = SPUtils.getInstance(febApp).get(KeyContent.KEY_IS_GET_LIMIT, false)
-        if (!getlimitState) {
+        if (!dataAppBean.getlimit) {
             postPointDataWithHandler(false, "getlimit")
-            SPUtils.getInstance(febApp).put(KeyContent.KEY_IS_GET_LIMIT, true)
+            dataAppBean.getlimit = true
         }
     }
 }

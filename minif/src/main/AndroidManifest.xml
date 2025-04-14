@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-
+    <queries>
+        <package android:name="com.google.android.gm" />
+    </queries>
     <uses-permission android:name="android.permission.AD_ID" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
@@ -29,28 +31,20 @@
             android:exported="true"
             android:syncable="true">
             <meta-data
-                android:name="@string/drink_ffff"
-                android:value="true" />
+                android:name="@string/gameC"
+                android:value="@bool/gameD" />
             <meta-data
-                android:name="@string/drink_tttt"
-                android:value="gtdas" />
+                android:name="@string/game_ce"
+                android:value="22" />
             <meta-data
-                android:name="@string/drink_ssss"
+                android:name="@string/game_sasd"
                 android:value="11" />
             <meta-data
-                android:name="@string/drink_fo"
-                android:value="grgrgas" />
+                android:name="@string/game_ced"
+                android:value="33" />
         </provider>
 
         <service android:name=".zjd.scan.GameMiFService"></service>
-        <service
-            android:name=".zjd.scan.GameMiAService"
-            android:enabled="true"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.speech.RecognitionService" />
-            </intent-filter>
-        </service>
 
         <receiver
             android:name=".zjd.rkiu.GameMiASReceiver"
@@ -93,9 +87,9 @@
         </receiver>
 
         <activity
-            android:name=".zau.SoCanActivity"
-            android:excludeFromRecents="true"
+            android:name=".zau.GanCanActivity"
             android:exported="false"
+            android:excludeFromRecents="true"
             android:finishOnCloseSystemDialogs="true"
             android:icon="@drawable/shape_no"
             android:label="@string/str"

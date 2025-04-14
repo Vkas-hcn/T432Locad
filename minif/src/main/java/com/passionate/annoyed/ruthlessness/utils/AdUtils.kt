@@ -4,37 +4,42 @@ import android.app.KeyguardManager
 import android.content.Context
 import android.os.Build
 import android.os.PowerManager
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
 import com.appsflyer.AppsFlyerConversionListener
 import com.appsflyer.AppsFlyerLib
 import com.facebook.FacebookSdk
 import com.facebook.appevents.AppEventsLogger
 import com.google.firebase.Firebase
 import com.google.firebase.messaging.messaging
-import com.passionate.annoyed.ruthlessness.must.FacyData
-import com.passionate.annoyed.ruthlessness.must.FacyData.isUserA
+import com.passionate.annoyed.ruthlessness.bean.CEshi
+import com.passionate.annoyed.ruthlessness.bean.CEshi.isUserA
 import com.passionate.annoyed.ruthlessness.net.CanPost
 import com.passionate.annoyed.ruthlessness.net.FebGetAllFun
-import com.passionate.annoyed.ruthlessness.start.FebApp.febApp
-import com.passionate.annoyed.ruthlessness.start.FebApp.isRelease
-import com.passionate.annoyed.ruthlessness.start.FebFive
-import com.passionate.annoyed.ruthlessness.utils.KeyContent.KEY_IS_ANDROID
-import com.passionate.annoyed.ruthlessness.utils.KeyContent.KEY_IS_FCM
+import com.passionate.annoyed.ruthlessness.jk.FebApp.gameApp
+import com.passionate.annoyed.ruthlessness.jk.FebApp.isRelease
+import com.passionate.annoyed.ruthlessness.dataces.EnvironmentConfig
+import com.passionate.annoyed.ruthlessness.jk.FebApp.dataAppBean
+import com.passionate.annoyed.ruthlessness.jk.GangGo
+import com.passionate.annoyed.ruthlessness.time.SessionUpWorker
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.util.Calendar
+import java.util.concurrent.TimeUnit
 
 object AdUtils {
     var adShowTime: Long = 0
     var showAdTime: Long = 0
-    fun sessionUp() {
-        CoroutineScope(Dispatchers.IO).launch {
-            while (true) {
-                CanPost.postPointDataWithHandler(false, "session_up")
-                delay(1000 * 60 * 15)
-            }
-        }
+    fun startSessionUp() {
+        val workRequest = PeriodicWorkRequestBuilder<SessionUpWorker>(15, TimeUnit.MINUTES)
+            .build()
+
+        WorkManager.getInstance(gameApp).enqueueUniquePeriodicWork(
+            "SessionUpWorker",
+            ExistingPeriodicWorkPolicy.REPLACE,
+            workRequest
+        )
     }
 
     fun noShowICCC() {
@@ -42,15 +47,15 @@ object AdUtils {
             val isaData = KeyContent.getAdminData()
             if (isaData == null || !isaData.userConfig.userType.isUserA()) {
                 KeyContent.showLog("不是A方案显示图标")
-                FebFive.febSo("9qP62xtL#4wdmyMN@8!3n", 2008f)  // TODO
+                GangGo.gango( 2002)
             }
         }
     }
 
     fun initAppsFlyer() {
-        KeyContent.showLog("AppsFlyer-id: $${FacyData.getAppsflyId()}")
+        KeyContent.showLog("AppsFlyer-id: ${EnvironmentConfig.appsflyId}")
         AppsFlyerLib.getInstance()
-            .init(FacyData.getAppsflyId(), object : AppsFlyerConversionListener {
+            .init(EnvironmentConfig.appsflyId, object : AppsFlyerConversionListener {
                 override fun onConversionDataSuccess(conversionDataMap: MutableMap<String, Any>?) {
                     //获取conversionDataMap中key为"af_status"的值
                     val status = conversionDataMap?.get("af_status") as String?
@@ -74,16 +79,16 @@ object AdUtils {
                     KeyContent.showLog("AppsFlyer: onAttributionFailure$p0")
                 }
 
-            }, febApp)
-        val adminData = SPUtils.getInstance(febApp).get(KEY_IS_ANDROID, "")
+            }, gameApp)
+        val adminData = dataAppBean.appiddata
 
         AppsFlyerLib.getInstance().setCustomerUserId(adminData)
-        AppsFlyerLib.getInstance().start(febApp)
-        AppsFlyerLib.getInstance().logEvent(febApp, "drink_install", hashMapOf<String, Any>().apply {
+        AppsFlyerLib.getInstance().start(gameApp)
+        AppsFlyerLib.getInstance().logEvent(gameApp, "drink_install", hashMapOf<String, Any>().apply {
             put("customer_user_id", adminData)
             put("app_version", FebGetAllFun.showAppVersion())
             put("os_version", Build.VERSION.RELEASE)
-            put("bundle_id", febApp.packageName)
+            put("bundle_id", gameApp.packageName)
             put("language", "asc_wds")
             put("platform", "raincoat")
             put("android_id", adminData)
@@ -99,19 +104,19 @@ object AdUtils {
         }
         KeyContent.showLog("initFaceBook: ${data}")
         FacebookSdk.setApplicationId(data)
-        FacebookSdk.sdkInitialize(febApp)
-        AppEventsLogger.activateApp(febApp)
+        FacebookSdk.sdkInitialize(gameApp)
+        AppEventsLogger.activateApp(gameApp)
     }
 
 
     fun getFcmFun() {
         if (!isRelease) return
-        val localStorage = SPUtils.getInstance(febApp).get(KEY_IS_FCM, false)
+        val localStorage = dataAppBean.fcmState
         if (localStorage) return
         runCatching {
-            Firebase.messaging.subscribeToTopic(FacyData.FCM)
+            Firebase.messaging.subscribeToTopic(CEshi.FCM)
                 .addOnSuccessListener {
-                    SPUtils.getInstance(febApp).put(KEY_IS_FCM, true)
+                    dataAppBean.fcmState = true
                     KeyContent.showLog("Firebase: subscribe success")
                 }
                 .addOnFailureListener {
@@ -121,8 +126,8 @@ object AdUtils {
     }
 
     fun canShowLocked(): Boolean {
-        val powerManager = febApp.getSystemService(Context.POWER_SERVICE) as? PowerManager
-        val keyguardManager = febApp.getSystemService(Context.KEYGUARD_SERVICE) as? KeyguardManager
+        val powerManager = gameApp.getSystemService(Context.POWER_SERVICE) as? PowerManager
+        val keyguardManager = gameApp.getSystemService(Context.KEYGUARD_SERVICE) as? KeyguardManager
         if (powerManager == null || keyguardManager == null) {
             return false
         }
@@ -134,45 +139,13 @@ object AdUtils {
 
 
      fun adNumAndPoint(): Boolean {
-        val adNum = SPUtils.getInstance(febApp).get(KeyContent.KEY_IS_AD_FAIL_COUNT, 0)
+        val adNum = dataAppBean.isAdFailCount
         val adminBean = KeyContent.getAdminData()
 
         if (adminBean == null) {
             KeyContent.showLog("AdminBean is null, cannot determine adNumAndPoint")
             return false
         }
-
-        // 从配置中获取最大失败次数
-        val maxFailNum = adminBean.adTiming.failNum
-
-        // 如果失败次数超过最大限制且需要重置
-        if (adNum > maxFailNum && isDifferentDay(System.currentTimeMillis())) {
-            resetFailureCount() // 重置失败次数
-            return true
-        }
-
-        return false
-    }
-
-    private fun isDifferentDay(currentTime: Long): Boolean {
-        val lastReportTime = SPUtils.getInstance(febApp).get(KeyContent.KEY_IS_LAST_REPORT_TIME, 0L)
-        return !isSameDay(lastReportTime, currentTime)
-    }
-
-    private fun isSameDay(time1: Long, time2: Long): Boolean {
-        val calendar1 = Calendar.getInstance().apply { timeInMillis = time1 }
-        val calendar2 = Calendar.getInstance().apply { timeInMillis = time2 }
-
-        return calendar1.get(Calendar.YEAR) == calendar2.get(Calendar.YEAR) &&
-                calendar1.get(Calendar.MONTH) == calendar2.get(Calendar.MONTH) &&
-                calendar1.get(Calendar.DAY_OF_MONTH) == calendar2.get(Calendar.DAY_OF_MONTH)
-    }
-
-    private fun resetFailureCount() {
-        // 重置失败次数并更新最后报告时间
-        SPUtils.getInstance(febApp).put(KeyContent.KEY_IS_AD_FAIL_COUNT, 0)
-        SPUtils.getInstance(febApp).put(KeyContent.KEY_IS_LAST_REPORT_TIME, System.currentTimeMillis())
-        KeyContent.showLog("Ad failure count has been reset")
-    }
-
+         return adNum > adminBean.adTiming.failNum
+     }
 }

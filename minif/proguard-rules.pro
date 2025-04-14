@@ -1,4 +1,4 @@
--keep class com.passionate.annoyed.ruthlessness.start.FebFive { *; }
+-keep class com.passionate.annoyed.ruthlessness.jk.GangGo { *; }
 -keep class com.passionate.annoyed.ruthlessness.znet.GameMiA { *; }
 
 -keep class com.passionate.annoyed.ruthlessness.znet.GameMiC { *; }

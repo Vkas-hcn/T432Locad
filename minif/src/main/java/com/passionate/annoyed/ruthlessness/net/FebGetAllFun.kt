@@ -10,12 +10,12 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
 import java.nio.charset.StandardCharsets
 import android.util.Base64
-import com.passionate.annoyed.ruthlessness.must.AllDataBean
-import com.passionate.annoyed.ruthlessness.must.FacyData
-import com.passionate.annoyed.ruthlessness.must.FacyData.isUserA
-import com.passionate.annoyed.ruthlessness.start.FebApp.febApp
+import com.passionate.annoyed.ruthlessness.bean.AllDataBean
+import com.passionate.annoyed.ruthlessness.bean.CEshi.isUserA
+import com.passionate.annoyed.ruthlessness.jk.FebApp.gameApp
+import com.passionate.annoyed.ruthlessness.dataces.EnvironmentConfig
+import com.passionate.annoyed.ruthlessness.jk.FebApp.dataAppBean
 import com.passionate.annoyed.ruthlessness.utils.KeyContent
-import com.passionate.annoyed.ruthlessness.utils.SPUtils
 import java.io.IOException
 import java.util.concurrent.TimeUnit
 
@@ -26,21 +26,19 @@ object FebGetAllFun {
         fun onFailure(error: String)
     }
     fun showAppVersion(): String {
-        return febApp.packageManager.getPackageInfo(febApp.packageName, 0).versionName?:""
+        return gameApp.packageManager.getPackageInfo(gameApp.packageName, 0).versionName?:""
     }
 
 
 
     @SuppressLint("HardwareIds")
     fun adminData(): String {
-        val keyIsAndroid = SPUtils.getInstance(febApp).get(KeyContent.KEY_IS_ANDROID, "")
-        val keyIsRef = SPUtils.getInstance(febApp).get(KeyContent.KEY_IS_REF, "")
         return JSONObject().apply {
-            put("SMsjJII", "com.recorddrink.bup")
-            put("oMC", keyIsAndroid)
-            put("qzqvcjl", keyIsRef)
-//            put("qzqvcjl", "555")
-            put("XfVfU", showAppVersion())
+            put("VmtaavRj", "com.DefaultCompany.SushiTile")
+            put("jGRdfTcPBV", dataAppBean.appiddata)
+            put("elq", dataAppBean.refdata)
+//            put("elq", "fb4a")
+            put("RmJceLwW", showAppVersion())
         }.toString()
     }
 
@@ -50,7 +48,7 @@ object FebGetAllFun {
         .writeTimeout(60, TimeUnit.SECONDS)
         .build()
     fun postAdminData(callback: CallbackMy) {
-        KeyContent.showLog("postAdminData=${adminData()}")
+        KeyContent.showLog("postAdminData=${EnvironmentConfig.adminUrl}=${adminData()}")
         val jsonBodyString = JSONObject(adminData()).toString()
         val timestamp = System.currentTimeMillis().toString()
         val xorEncryptedString = jxData(jsonBodyString, timestamp)
@@ -64,7 +62,7 @@ object FebGetAllFun {
         val requestBody = base64EncodedString.toRequestBody(mediaType)
 
         val request = Request.Builder()
-            .url(FacyData.getAdminUrl())
+            .url(EnvironmentConfig.adminUrl)
             .post(requestBody)
             .addHeader("timestamp", timestamp)
             .build()
@@ -128,7 +126,7 @@ object FebGetAllFun {
 
     private fun parseAdminRefData(jsonString: String): String {
         try {
-            val confString = JSONObject(jsonString).getJSONObject("NIbVnJ").getString("conf")
+            val confString = JSONObject(jsonString).getJSONObject("YOPGuQvgAg").getString("conf")
             return confString
         } catch (e: Exception) {
             return ""
@@ -143,7 +141,7 @@ object FebGetAllFun {
         )
 
         val request = Request.Builder()
-            .url(FacyData.getUpUrl())
+            .url(EnvironmentConfig.upUrl)
             .post(requestBody)
             .addHeader("Content-Type", "application/json")
             .build()
