@@ -1,8 +1,21 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+//    id 'com.google.firebase.crashlytics'
+//    id 'com.google.gms.google-services'
 }
+apply plugin: 'stringfog'
+import com.github.megatronking.stringfog.plugin.kg.RandomKeyGenerator
+import com.github.megatronking.stringfog.plugin.StringFogMode
 
+stringfog {
+    implementation 'com.github.megatronking.stringfog.xor.StringFogImpl'
+    packageName 'com.github.megatronking.stringfog.app'
+    enable true
+    fogPackages = ['com.de.lo.stt432locad', 'com.passionate.annoyed.ruthlessness']
+    kg new RandomKeyGenerator()
+    mode StringFogMode.base64
+}
 android {
     namespace 'com.de.lo.stt432locad'
     compileSdk 35
@@ -39,6 +52,7 @@ android {
 
 dependencies {
     implementation project(":minif")
+    implementation 'com.github.megatronking.stringfog:xor:5.0.0'
     implementation libs.androidx.core.ktx
     implementation libs.androidx.appcompat
     implementation libs.material
