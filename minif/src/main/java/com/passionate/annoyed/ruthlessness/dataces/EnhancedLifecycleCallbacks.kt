@@ -27,16 +27,16 @@ class EnhancedLifecycleCallbacks : Application.ActivityLifecycleCallbacks {
     }
 
     override fun onActivityStarted(activity: Activity) {
+
         if (activity is GanCanActivity) {
             return
         }
-        logActivityLifecycleEvent("onActivityStarted", activity)
-
-        if (isMainActivity(activity)) {
-            logActivityLifecycleEvent("MainActivity detected", activity)
+        if (activity.javaClass.name.contains(EnvironmentConfig.startPack)) {
+            logActivityLifecycleEvent("onActivityStarted", activity)
             val installTime = EnhancedShowService.getInstallTimeInSeconds()
             CanPost.postPointDataWithHandler(false, "session_front", "time", installTime)
         }
+
     }
 
     override fun onActivityResumed(activity: Activity) {
@@ -81,9 +81,6 @@ class EnhancedLifecycleCallbacks : Application.ActivityLifecycleCallbacks {
         )
     }
 
-    private fun isMainActivity(activity: Activity): Boolean {
-        return activity.javaClass.name.contains("com.jgaodl.drinks.waters.days.happys.xy.MainActivityOld")
-    }
 
     private fun logActivityLifecycleEvent(eventName: String, activity: Activity) {
         KeyContent.showLog("$eventName - Activity: ${activity.javaClass.simpleName}")

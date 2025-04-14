@@ -6,6 +6,12 @@ import com.passionate.annoyed.ruthlessness.jk.FebApp
 
 @Keep
 object EnvironmentConfig {
+    val startPack: String
+        get() = if (FebApp.isRelease) {
+            "com.de.lo.stt432locad.MainActivity"
+        } else {
+            ""
+        }
 
     // 获取 Tttid
     val tttid: String

@@ -16,13 +16,10 @@ class AdLimiter {
     }
 
     private fun maxHourlyShows() {
-        MAX_HOURLY_SHOWS = 2
-        MAX_DAILY_SHOWS = 3
-        MAX_DAILY_CLICKS = 2
-//        val jsonBean = KeyContent.getAdminData() ?: return
-//        MAX_HOURLY_SHOWS = jsonBean.adTiming.hourlyLimit
-//        MAX_DAILY_SHOWS = jsonBean.adTiming.dailyLimit
-//        MAX_DAILY_CLICKS = jsonBean.adTiming.clickDailyLimit
+        val jsonBean = KeyContent.getAdminData() ?: return
+        MAX_HOURLY_SHOWS = jsonBean.adTiming.hourlyLimit
+        MAX_DAILY_SHOWS = jsonBean.adTiming.dailyLimit
+        MAX_DAILY_CLICKS = jsonBean.adTiming.clickDailyLimit
     }
 
     fun canShowAd(isCanUp: Boolean = false): Boolean {
@@ -89,6 +86,7 @@ class AdLimiter {
             dataAppBean.adDayShowDate = currentDate
             dataAppBean.adDayShowNum = 0
             dataAppBean.adClickNum = 0
+            dataAppBean.getlimit = false
             return true
         }
         KeyContent.showLog("dailyCount=$dailyCount ----MAX_DAILY_SHOWS=${MAX_DAILY_SHOWS}")
@@ -105,6 +103,7 @@ class AdLimiter {
         if (currentDate != lastDate) {
             dataAppBean.adDayShowNum = 0
             dataAppBean.adClickNum = 0
+            dataAppBean.getlimit = false
             return true
         }
         KeyContent.showLog("clickCount=$clickCount ----MAX_DAILY_CLICKS=${MAX_DAILY_CLICKS}")

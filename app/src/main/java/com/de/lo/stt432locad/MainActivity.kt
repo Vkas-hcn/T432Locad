@@ -26,11 +26,11 @@ class MainActivity : AppCompatActivity() {
         val adLimiter = AdLimiter()
 
         button2.setOnClickListener {
-            val state = adLimiter.canShowAd()
+            val state = adLimiter.canShowAd(true)
             Log.e("TAG", "onCreate: state=$state", )
         }
         button3.setOnClickListener {
-            adLimiter.recordAdClicked()
+            adLimiter.recordAdShown()
         }
     }
 }
