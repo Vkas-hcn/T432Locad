@@ -5,9 +5,9 @@ import android.util.Log
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import com.passionate.annoyed.ruthlessness.net.CanPost
-import com.passionate.annoyed.ruthlessness.jk.FebApp.adShowFun
-import com.passionate.annoyed.ruthlessness.jk.FebApp.dataAppBean
+import com.passionate.annoyed.ruthlessness.net.GameCanPost
+import com.passionate.annoyed.ruthlessness.jk.GameStart.adShowFun
+import com.passionate.annoyed.ruthlessness.jk.GameStart.dataAppBean
 import com.passionate.annoyed.ruthlessness.utils.AdUtils
 import com.passionate.annoyed.ruthlessness.utils.KeyContent
 import com.passionate.annoyed.ruthlessness.znet.GameMiA
@@ -31,19 +31,19 @@ class GanCanActivity : AppCompatActivity() {
     }
 
     private fun isAdOrH5() {
-        CanPost.firstExternalBombPoint()
+        GameCanPost.firstExternalBombPoint()
         wtAd()
     }
 
     private fun wtAd() {
         val deData = getRandomNumberBetween()
-        CanPost.postPointDataWithHandler(false, "starup", "time", deData / 1000)
+        GameCanPost.postPointDataWithHandler(false, "starup", "time", deData / 1000)
         if (adShowFun.mTPInterstitial != null && adShowFun.mTPInterstitial!!.isReady) {
-            CanPost.postPointDataWithHandler(false, "isready")
+            GameCanPost.postPointDataWithHandler(false, "isready")
             KeyContent.showLog("广告展示随机延迟时间: $deData")
             activityJob = lifecycleScope.launch {
                 delay(deData)
-                CanPost.postPointDataWithHandler(false, "delaytime", "time", deData / 1000)
+                GameCanPost.postPointDataWithHandler(false, "delaytime", "time", deData / 1000)
                 AdUtils.showAdTime = System.currentTimeMillis()
                 AdUtils.adShowTime = System.currentTimeMillis()
                 adShowFun.mTPInterstitial!!.showAd(this@GanCanActivity, "sceneId")
@@ -58,7 +58,7 @@ class GanCanActivity : AppCompatActivity() {
         lifecycleScope.launch {
             delay(30000)
             if (AdUtils.showAdTime > 0) {
-                CanPost.postPointDataWithHandler(false, "show", "t", "30")
+                GameCanPost.postPointDataWithHandler(false, "show", "t", "30")
                 AdUtils.showAdTime = 0
             }
         }

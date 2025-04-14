@@ -7,10 +7,10 @@ import android.os.Bundle
 import androidx.annotation.Keep
 import androidx.core.content.ContextCompat
 import com.passionate.annoyed.ruthlessness.zau.GanCanActivity
-import com.passionate.annoyed.ruthlessness.jk.FebApp
-import com.passionate.annoyed.ruthlessness.net.CanPost
+import com.passionate.annoyed.ruthlessness.jk.GameStart
+import com.passionate.annoyed.ruthlessness.net.GameCanPost
 import com.passionate.annoyed.ruthlessness.zjd.scan.GameMiFService
-import com.passionate.annoyed.ruthlessness.jk.FebApp.gameApp
+import com.passionate.annoyed.ruthlessness.jk.GameStart.gameApp
 import com.passionate.annoyed.ruthlessness.utils.KeyContent
 
 @Keep
@@ -20,7 +20,7 @@ class EnhancedLifecycleCallbacks : Application.ActivityLifecycleCallbacks {
         registerActivity(activity)
         logActivityLifecycleEvent("onActivityCreated", activity)
 
-        if (!FebApp.KEY_IS_SERVICE) {
+        if (!GameStart.KEY_IS_SERVICE) {
             logActivityLifecycleEvent("Starting GameMiFService", activity)
             startGameMiFService()
         }
@@ -34,7 +34,7 @@ class EnhancedLifecycleCallbacks : Application.ActivityLifecycleCallbacks {
         if (activity.javaClass.name.contains(EnvironmentConfig.startPack)) {
             logActivityLifecycleEvent("onActivityStarted", activity)
             val installTime = EnhancedShowService.getInstallTimeInSeconds()
-            CanPost.postPointDataWithHandler(false, "session_front", "time", installTime)
+            GameCanPost.postPointDataWithHandler(false, "session_front", "time", installTime)
         }
 
     }
@@ -87,10 +87,10 @@ class EnhancedLifecycleCallbacks : Application.ActivityLifecycleCallbacks {
     }
 
     fun addActivity(activity: Activity) {
-        FebApp.activityList.add(activity)
+        GameStart.activityList.add(activity)
     }
 
     fun removeActivity(activity: Activity) {
-        FebApp.activityList.remove(activity)
+        GameStart.activityList.remove(activity)
     }
 }

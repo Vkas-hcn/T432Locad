@@ -2,7 +2,7 @@ package com.passionate.annoyed.ruthlessness.bean
 
 
 import androidx.annotation.Keep
-import com.passionate.annoyed.ruthlessness.jk.FebApp.gameApp
+import com.passionate.annoyed.ruthlessness.jk.GameStart.gameApp
 
 @Keep
 class DataAppBean {

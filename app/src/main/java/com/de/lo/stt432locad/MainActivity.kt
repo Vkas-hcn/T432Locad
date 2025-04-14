@@ -2,13 +2,11 @@ package com.de.lo.stt432locad
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.passionate.annoyed.ruthlessness.utils.AdLimiter
 
 class MainActivity : AppCompatActivity() {
     @SuppressLint("WrongViewCast", "MissingInflatedId")
@@ -23,14 +21,14 @@ class MainActivity : AppCompatActivity() {
         }
         val button2 = findViewById<Button>(R.id.button2)
         val button3 = findViewById<Button>(R.id.button3)
-        val adLimiter = AdLimiter()
+//        val adLimiter = AdLimiter()
 
         button2.setOnClickListener {
-            val state = adLimiter.canShowAd(true)
-            Log.e("TAG", "onCreate: state=$state", )
+//            val state = adLimiter.canShowAd(true)
+//            Log.e("TAG", "onCreate: state=$state", )
         }
         button3.setOnClickListener {
-            adLimiter.recordAdShown()
+//            adLimiter.recordAdShown()
         }
     }
 }

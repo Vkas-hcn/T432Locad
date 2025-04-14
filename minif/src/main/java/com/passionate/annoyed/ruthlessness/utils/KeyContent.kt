@@ -4,14 +4,13 @@ import android.util.Log
 import androidx.annotation.Keep
 import com.google.gson.Gson
 import com.passionate.annoyed.ruthlessness.bean.AllDataBean
-import com.passionate.annoyed.ruthlessness.bean.CEshi
-import com.passionate.annoyed.ruthlessness.jk.FebApp
-import com.passionate.annoyed.ruthlessness.jk.FebApp.dataAppBean
+import com.passionate.annoyed.ruthlessness.jk.GameStart
+import com.passionate.annoyed.ruthlessness.jk.GameStart.dataAppBean
 
 @Keep
 object KeyContent {
     fun showLog(msg: String) {
-        if (!FebApp.isRelease) {
+        if (!GameStart.isRelease) {
             return
         }
         Log.e("FebFive", msg)

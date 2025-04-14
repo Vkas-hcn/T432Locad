@@ -1,10 +1,7 @@
 package com.passionate.annoyed.ruthlessness.utils
 
-import android.content.Context
-import android.content.SharedPreferences
-import com.passionate.annoyed.ruthlessness.net.CanPost
-import com.passionate.annoyed.ruthlessness.jk.FebApp
-import com.passionate.annoyed.ruthlessness.jk.FebApp.dataAppBean
+import com.passionate.annoyed.ruthlessness.net.GameCanPost
+import com.passionate.annoyed.ruthlessness.jk.GameStart.dataAppBean
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -26,21 +23,21 @@ class AdLimiter {
         maxHourlyShows()
         if (!checkDailyShowLimit()) {
             if (isCanUp) {
-                CanPost.postPointDataWithHandler(false, "ispass", "string", "day_limit")
-                CanPost.getLiMitData()
+                GameCanPost.postPointDataWithHandler(false, "ispass", "string", "day_limit")
+                GameCanPost.getLiMitData()
             }
             return false
         }
         if (!checkDailyClickLimit()) {
             if (isCanUp) {
-                CanPost.postPointDataWithHandler(false, "ispass", "string", "click_limit")
-                CanPost.getLiMitData()
+                GameCanPost.postPointDataWithHandler(false, "ispass", "string", "click_limit")
+                GameCanPost.getLiMitData()
             }
             return false
         }
         if (!checkHourLimit()) {
             if (isCanUp) {
-                CanPost.postPointDataWithHandler(false, "ispass", "string", "hour_limit")
+                GameCanPost.postPointDataWithHandler(false, "ispass", "string", "hour_limit")
             }
             return false
         }

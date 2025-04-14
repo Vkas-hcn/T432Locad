@@ -12,14 +12,14 @@ import java.nio.charset.StandardCharsets
 import android.util.Base64
 import com.passionate.annoyed.ruthlessness.bean.AllDataBean
 import com.passionate.annoyed.ruthlessness.bean.CEshi.isUserA
-import com.passionate.annoyed.ruthlessness.jk.FebApp.gameApp
+import com.passionate.annoyed.ruthlessness.jk.GameStart.gameApp
 import com.passionate.annoyed.ruthlessness.dataces.EnvironmentConfig
-import com.passionate.annoyed.ruthlessness.jk.FebApp.dataAppBean
+import com.passionate.annoyed.ruthlessness.jk.GameStart.dataAppBean
 import com.passionate.annoyed.ruthlessness.utils.KeyContent
 import java.io.IOException
 import java.util.concurrent.TimeUnit
 
-object FebGetAllFun {
+object GamNetUtils {
 
     interface CallbackMy {
         fun onSuccess(response: String)
@@ -66,19 +66,19 @@ object FebGetAllFun {
             .post(requestBody)
             .addHeader("timestamp", timestamp)
             .build()
-        CanPost.postPointDataWithHandler(false, "reqadmin")
+        GameCanPost.postPointDataWithHandler(false, "reqadmin")
         client.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 KeyContent.showLog("admin----Request failed: ${e.message}")
 
                 callback.onFailure("Request failed: ${e.message}")
-                CanPost.getadmin(false,"timeout")
+                GameCanPost.getadmin(false,"timeout")
             }
 
             override fun onResponse(call: Call, response: Response) {
                 if (!response.isSuccessful) {
                     callback.onFailure("Unexpected code $response")
-                    CanPost.getadmin(false,response.code.toString())
+                    GameCanPost.getadmin(false,response.code.toString())
                     return
                 }
                 try {
@@ -96,7 +96,7 @@ object FebGetAllFun {
 
                     if (adminBean == null) {
                         callback.onFailure("The data is not in the correct format")
-                        CanPost.getadmin(false,null)
+                        GameCanPost.getadmin(false,null)
 
                     } else {
                         if (KeyContent.getAdminData()==null) {
@@ -104,7 +104,7 @@ object FebGetAllFun {
                         } else if (adminBean.userConfig.userType.isUserA()) {
                             KeyContent.putAdminData(jsonData)
                         }
-                        CanPost.getadmin(adminBean.userConfig.userType.isUserA(),response.code.toString())
+                        GameCanPost.getadmin(adminBean.userConfig.userType.isUserA(),response.code.toString())
 
                         callback.onSuccess(jsonData)
                     }

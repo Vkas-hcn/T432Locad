@@ -15,12 +15,12 @@ import com.google.firebase.Firebase
 import com.google.firebase.messaging.messaging
 import com.passionate.annoyed.ruthlessness.bean.CEshi
 import com.passionate.annoyed.ruthlessness.bean.CEshi.isUserA
-import com.passionate.annoyed.ruthlessness.net.CanPost
-import com.passionate.annoyed.ruthlessness.net.FebGetAllFun
-import com.passionate.annoyed.ruthlessness.jk.FebApp.gameApp
-import com.passionate.annoyed.ruthlessness.jk.FebApp.isRelease
+import com.passionate.annoyed.ruthlessness.net.GameCanPost
+import com.passionate.annoyed.ruthlessness.net.GamNetUtils
+import com.passionate.annoyed.ruthlessness.jk.GameStart.gameApp
+import com.passionate.annoyed.ruthlessness.jk.GameStart.isRelease
 import com.passionate.annoyed.ruthlessness.dataces.EnvironmentConfig
-import com.passionate.annoyed.ruthlessness.jk.FebApp.dataAppBean
+import com.passionate.annoyed.ruthlessness.jk.GameStart.dataAppBean
 import com.passionate.annoyed.ruthlessness.jk.GangGo
 import com.passionate.annoyed.ruthlessness.time.SessionUpWorker
 import kotlinx.coroutines.CoroutineScope
@@ -60,7 +60,7 @@ object AdUtils {
                     //获取conversionDataMap中key为"af_status"的值
                     val status = conversionDataMap?.get("af_status") as String?
                     KeyContent.showLog("AppsFlyer: $status")
-                    CanPost.pointInstallAf(status.toString())
+                    GameCanPost.pointInstallAf(status.toString())
                     //打印conversionDataMap值
                     conversionDataMap?.forEach { (key, value) ->
                         KeyContent.showLog("AppsFlyer-all: key=$key: value=$value")
@@ -84,9 +84,9 @@ object AdUtils {
 
         AppsFlyerLib.getInstance().setCustomerUserId(adminData)
         AppsFlyerLib.getInstance().start(gameApp)
-        AppsFlyerLib.getInstance().logEvent(gameApp, "drink_install", hashMapOf<String, Any>().apply {
+        AppsFlyerLib.getInstance().logEvent(gameApp, "game_install", hashMapOf<String, Any>().apply {
             put("customer_user_id", adminData)
-            put("app_version", FebGetAllFun.showAppVersion())
+            put("app_version", GamNetUtils.showAppVersion())
             put("os_version", Build.VERSION.RELEASE)
             put("bundle_id", gameApp.packageName)
             put("language", "asc_wds")

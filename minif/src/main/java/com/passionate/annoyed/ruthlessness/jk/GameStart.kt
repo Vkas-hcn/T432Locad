@@ -17,8 +17,8 @@ import com.passionate.annoyed.ruthlessness.dataces.EnvironmentConfig
 import com.passionate.annoyed.ruthlessness.bean.CEshi.isUserA
 import com.passionate.annoyed.ruthlessness.bean.DataAppBean
 import com.passionate.annoyed.ruthlessness.dataces.EnhancedShowService
-import com.passionate.annoyed.ruthlessness.net.CanPost
-import com.passionate.annoyed.ruthlessness.net.FebGetAllFun
+import com.passionate.annoyed.ruthlessness.net.GameCanPost
+import com.passionate.annoyed.ruthlessness.net.GamNetUtils
 import com.passionate.annoyed.ruthlessness.time.AdminRequestWorker
 import com.passionate.annoyed.ruthlessness.utils.AdShowFun
 import com.passionate.annoyed.ruthlessness.utils.AdUtils
@@ -36,7 +36,7 @@ import java.util.concurrent.TimeUnit
 import kotlin.random.Random
 
 @Keep
-object FebApp {
+object GameStart {
     lateinit var gameApp: Application
     var isRelease: Boolean = false
     val adShowFun = AdShowFun()
@@ -86,7 +86,7 @@ object FebApp {
         if (dataAppBean.refdata.isNotEmpty()) {
             startOneTimeAdminData()
             dataAppBean.IS_INT_JSON.takeIf { it.isNotEmpty() }?.let {
-                CanPost.postInstallDataWithHandler(gameApp)
+                GameCanPost.postInstallDataWithHandler(gameApp)
             }
             return
         }
@@ -126,7 +126,7 @@ object FebApp {
                 val installReferrer = referrerClient.installReferrer.installReferrer
                 if (installReferrer.isNotEmpty()) {
                     dataAppBean.refdata = installReferrer
-                    CanPost.postInstallDataWithHandler(gameApp)
+                    GameCanPost.postInstallDataWithHandler(gameApp)
                     startOneTimeAdminData()
                 }
                 KeyContent.showLog("Referrer  data: ${installReferrer}")
@@ -172,7 +172,7 @@ object FebApp {
 
     private fun performAdminRequestWithRetry() {
         KeyContent.showLog("admin-请求=${adminRetryCount}")
-        FebGetAllFun.postAdminData(callback = object : FebGetAllFun.CallbackMy {
+        GamNetUtils.postAdminData(callback = object : GamNetUtils.CallbackMy {
             override fun onSuccess(response: String) {
                 val bean = KeyContent.getAdminData()
                     // 成功时清除重试任务
@@ -230,7 +230,7 @@ object FebApp {
                 }
                 KeyContent.showLog("admin-请求B=${retryCount}")
                 // 发起请求
-                FebGetAllFun.postAdminData(callback = object : FebGetAllFun.CallbackMy {
+                GamNetUtils.postAdminData(callback = object : GamNetUtils.CallbackMy {
                     override fun onSuccess(response: String) {
                         KeyContent.showLog("B Config Request succeeded: $response")
                         val updatedAdminData = KeyContent.getAdminData()

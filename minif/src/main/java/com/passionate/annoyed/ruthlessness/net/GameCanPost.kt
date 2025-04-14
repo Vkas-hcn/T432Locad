@@ -4,8 +4,8 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import com.passionate.annoyed.ruthlessness.dataces.EnhancedShowService
-import com.passionate.annoyed.ruthlessness.net.FebGetAllFun.showAppVersion
-import com.passionate.annoyed.ruthlessness.jk.FebApp.gameApp
+import com.passionate.annoyed.ruthlessness.net.GamNetUtils.showAppVersion
+import com.passionate.annoyed.ruthlessness.jk.GameStart.gameApp
 import com.passionate.annoyed.ruthlessness.utils.AdUtils
 import com.passionate.annoyed.ruthlessness.utils.KeyContent
 import org.json.JSONObject
@@ -18,12 +18,12 @@ import com.appsflyer.AdRevenueScheme
 import com.appsflyer.AppsFlyerLib
 import com.appsflyer.MediationNetwork
 import com.facebook.appevents.AppEventsLogger
-import com.passionate.annoyed.ruthlessness.jk.FebApp.dataAppBean
+import com.passionate.annoyed.ruthlessness.jk.GameStart.dataAppBean
 import com.tradplus.ads.base.bean.TPAdInfo
 import java.math.BigDecimal
 import java.util.Currency
 
-object CanPost {
+object GameCanPost {
 
 
     private fun topJsonData(context: Context, isInstall: Boolean = false): JSONObject {
@@ -208,7 +208,7 @@ object CanPost {
                         KeyContent.showLog("Install: retryCount=${retryCount}")
 
                         // 发起网络请求
-                        FebGetAllFun.postPutData(data, object : FebGetAllFun.CallbackMy {
+                        GamNetUtils.postPutData(data, object : GamNetUtils.CallbackMy {
                             override fun onSuccess(response: String) {
                                 KeyContent.showLog("Install-请求成功: $response")
                                 dataAppBean.IS_INT_JSON = ""
@@ -262,7 +262,7 @@ object CanPost {
                 if (!success && retryCount <= maxRetries) {
                     if (!isLod) {
                         isLod = true
-                        FebGetAllFun.postPutData(data, object : FebGetAllFun.CallbackMy {
+                        GamNetUtils.postPutData(data, object : GamNetUtils.CallbackMy {
                             override fun onSuccess(response: String) {
                                 KeyContent.showLog("AdInfo--请求成功: $response")
                                 success = true
@@ -335,7 +335,7 @@ object CanPost {
                     KeyContent.showLog("Point-${name}-重试: $retryCount")
                     if (!isLod) {
                         isLod = true
-                        FebGetAllFun.postPutData(data, object : FebGetAllFun.CallbackMy {
+                        GamNetUtils.postPutData(data, object : GamNetUtils.CallbackMy {
                             override fun onSuccess(response: String) {
                                 KeyContent.showLog("Point-${name}-请求成功: $response")
                                 success = true

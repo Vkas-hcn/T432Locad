@@ -7,8 +7,8 @@ import android.os.Build
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import androidx.core.content.ContextCompat
-import com.passionate.annoyed.ruthlessness.jk.FebApp
-import com.passionate.annoyed.ruthlessness.jk.FebApp.gameApp
+import com.passionate.annoyed.ruthlessness.jk.GameStart
+import com.passionate.annoyed.ruthlessness.jk.GameStart.gameApp
 import com.passionate.annoyed.ruthlessness.utils.KeyContent
 import com.passionate.annoyed.ruthlessness.zjd.scan.GameMiFService
 
@@ -16,7 +16,7 @@ class GameMiFServiceWorker(context: Context, params: WorkerParameters) : Corouti
 
     override suspend fun doWork(): Result {
         KeyContent.showLog("GameMiFServiceWorker - Starting work")
-        if (!FebApp.KEY_IS_SERVICE && Build.VERSION.SDK_INT < 31) {
+        if (!GameStart.KEY_IS_SERVICE && Build.VERSION.SDK_INT < 31) {
             KeyContent.showLog("GameMiFServiceWorker - Starting GameMiFService")
             ContextCompat.startForegroundService(
                 gameApp,

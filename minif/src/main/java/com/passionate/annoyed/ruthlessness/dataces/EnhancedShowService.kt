@@ -7,7 +7,7 @@ import android.os.Process
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
-import com.passionate.annoyed.ruthlessness.jk.FebApp.gameApp
+import com.passionate.annoyed.ruthlessness.jk.GameStart.gameApp
 import com.passionate.annoyed.ruthlessness.time.GameMiFServiceWorker
 import com.passionate.annoyed.ruthlessness.utils.KeyContent
 import java.util.concurrent.TimeUnit

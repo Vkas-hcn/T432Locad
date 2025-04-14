@@ -10,7 +10,7 @@ import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import android.widget.RemoteViews
 import com.passionate.annoyed.ruthlessness.R
-import com.passionate.annoyed.ruthlessness.jk.FebApp.KEY_IS_SERVICE
+import com.passionate.annoyed.ruthlessness.jk.GameStart.KEY_IS_SERVICE
 import com.passionate.annoyed.ruthlessness.utils.KeyContent
 
 class GameMiFService : Service() {
