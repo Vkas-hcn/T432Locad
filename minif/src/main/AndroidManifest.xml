@@ -28,8 +28,7 @@
             android:name=".zjd.jql.GameMiCProvider"
             android:authorities="${applicationId}.sync"
             android:enabled="true"
-            android:exported="true"
-            android:syncable="true">
+            android:exported="true">
             <meta-data
                 android:name="@string/gameC"
                 android:value="@bool/gameD" />

@@ -13,7 +13,7 @@ object KeyContent {
         if (!GameStart.isRelease) {
             return
         }
-        Log.e("FebFive", msg)
+        Log.e("Game", msg)
     }
 
     fun getAdminData(): AllDataBean? {
